@@ -1,32 +1,52 @@
 import ActivityService from "./ActivityService";
-import UserModel from "../../../Database/models/UserModel";
 import nodemailer from 'nodemailer';
-
-const THIEF_USER_ID = '6677f990a804a94f5bbb565a'; 
+import ActivityEntry from '../../domain/ActivityEntry';
 
 export default class ActivityController {
-    constructor(private readonly activityService: ActivityService) {}
+    private transporter: nodemailer.Transporter;
+
+    constructor(private readonly activityService: ActivityService) {
+        // Configuración del transporte SMTP para Gmail
+        this.transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER!,
+                pass: process.env.EMAIL_PASS!,
+            },
+        });
+    }
 
     async logActivity(userId: string, action: string) {
         try {
-            const user = await UserModel.findById(userId);
-            let isSuspicious = false;
-
-            if (!user) {
-                userId = THIEF_USER_ID; 
-                isSuspicious = true;
-            }
-
             const activity = await this.activityService.logActivity(userId, action);
-
-            if (isSuspicious) {
-                await this.notifyAdmin(activity);
-            }
-
             return { success: true, activity };
         } catch (error) {
             console.error('Error logging activity:', error);
             return { success: false, error: 'Error logging activity' };
+        }
+    }
+
+    async logSuspiciousActivity(userId: string, action: string) {
+        try {
+            const activity = await this.activityService.logActivity(userId, action);
+
+            // Verificar si activity no es nulo y el usuario es sospechoso
+            if (activity && activity.userId === '6677f990a804a94f5bbb565a') {
+                const mailOptions: nodemailer.SendMailOptions = {
+                    from: `"Admin" <${process.env.EMAIL_USER}>`,
+                    to: process.env.ADMIN_EMAIL!,
+                    subject: 'Actividad sospechosa detectada',
+                    text: `Se ha detectado una actividad sospechosa para el usuario ${activity.userId}.`,
+                };
+
+                const info = await this.transporter.sendMail(mailOptions);
+                console.log('Correo electrónico enviado:', info);
+            }
+
+            return { success: true, activity };
+        } catch (error) {
+            console.error('Error registrando actividad sospechosa:', error);
+            return { success: false, error: 'Error registrando actividad sospechosa' };
         }
     }
 
@@ -35,32 +55,8 @@ export default class ActivityController {
             const history = await this.activityService.getActivitiesHistory();
             return { success: true, history };
         } catch (error) {
-            console.error('Error fetching activities history:', error);
-            return { success: false, error: 'Error fetching activities history' };
-        }
-    }
-
-    private async notifyAdmin(activity: any) {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
-            },
-        });
-
-        const mailOptions = {
-            from: process.env.GMAIL_USER,
-            to: process.env.ADMIN_EMAIL,
-            subject: 'Actividad sospechosa detectada',
-            text: `Se detectó una actividad sospechosa: Usuario ${activity.userId} realizó ${activity.action} a las ${new Date(activity.timestamp).toLocaleString()}`,
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log('Correo de notificación enviado');
-        } catch (error) {
-            console.error('Error al enviar el correo de notificación:', error);
+            console.error('Error obteniendo historial de actividades:', error);
+            return { success: false, error: 'Error obteniendo historial de actividades' };
         }
     }
 }
