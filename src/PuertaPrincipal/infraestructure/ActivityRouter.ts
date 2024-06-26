@@ -15,13 +15,9 @@ const activityRouter = (io: Server, activityController: ActivityController): Rou
     });
 
     router.post('/suspicious', async (req, res) => {
-        const { userId, action } = req.body; // Asegúrate de recibir userId y action del cuerpo de la solicitud
-        const result = await activityController.logSuspiciousActivity(userId, action); // Pasar userId y action a logSuspiciousActivity
-        if (result.success) {
-            res.json({ success: true });
-        } else {
-            res.status(500).json({ success: false, error: 'Error registrando actividad sospechosa' });
-        }
+        const activity = req.body;
+        await activityController.logSuspiciousActivity(activity);
+        res.json({ success: true });
     });
 
     router.get('/history', async (req, res) => {
