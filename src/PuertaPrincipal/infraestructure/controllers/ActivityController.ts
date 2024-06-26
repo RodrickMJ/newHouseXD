@@ -6,13 +6,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default class ActivityController {
-    constructor(private readonly activityService: ActivityService) {}
+    constructor(private readonly activityService: ActivityService) { }
 
     async logActivity(userId: string, action: string) {
         try {
             const activity = await this.activityService.logActivity(userId, action);
 
-            if (activity && activity.userId === '6677f990a804a94f5bbb565a ') { // Reemplaza con el ID del ladrón en la base de datos
+            if (activity && activity.userId === '6677f990a804a94f5bbb565a') { 
                 await this.logSuspiciousActivity(activity);
             }
 
@@ -37,15 +37,17 @@ export default class ActivityController {
         try {
             const adminEmail = process.env.ADMIN_EMAIL;
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
                 auth: {
-                    user: process.env.GMAIL_USER, // Tu dirección de Gmail desde variables de entorno
-                    pass: process.env.GMAIL_PASS // Tu contraseña de Gmail desde variables de entorno
+                    user: process.env.GMAIL_USER, 
+                    pass: process.env.GMAIL_PASS 
                 }
             });
 
             const mailOptions = {
-                from: process.env.GMAIL_USER, // Tu dirección de Gmail
+                from: process.env.GMAIL_USER, 
                 to: adminEmail,
                 subject: 'Actividad sospechosa detectada',
                 text: `Se ha detectado una actividad sospechosa: 
