@@ -1,5 +1,5 @@
 export interface ActivityResponse {
-    id: number;
+    id: string;
     action: string;
     userId: string;
     timestamp: Date;

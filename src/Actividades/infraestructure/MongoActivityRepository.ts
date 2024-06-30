@@ -1,6 +1,6 @@
 import ActivityRepository from "../domain/ActivityRepository";
 import ActivityEntry from "../domain/ActivityEntry";
-import ActivityModel from "../../Database/models/PuertaPrincipal";
+import ActivityModel from "../../Database/models/Actividades";
 
 export default class MongoActivityRepository implements ActivityRepository {
     async logActivity(userId: string, action: string): Promise<ActivityEntry | null> {
