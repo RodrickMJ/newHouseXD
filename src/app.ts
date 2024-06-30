@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application } from 'express';
 import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
@@ -9,6 +9,7 @@ import activityRouter from './Actividades/infraestructure/ActivityRouter';
 import verifyToken from './Users/infrastructure/middleware/VerifyToken';
 import AuthController from './Users/infrastructure/controllers/AuthController';
 import { authService, authenticateUser } from './Users/infrastructure/dependencies';
+import deviceRouter from './Actividades/infraestructure/DeviceRouter';
 
 dotenv.config();
 
@@ -25,17 +26,20 @@ app.use(cors());
 
 const PORT: number | string = process.env.SERVER_PORT || 3000;
 
-connectToDatabase()
+connectToDatabase();
 
 const authController = AuthController(authenticateUser, authService);
 
 app.use('/auth', authController);
 app.use('/users', verifyToken(authService), userRouter);
 
-//aca esta la ruta primero pasa por la verificacion para las actividades.
+// Ruta de dispositivos
+app.use('/devices', verifyToken(authService), deviceRouter());
+
+// Ruta de actividades, pasa primero por la verificación del token y usa Socket.io
 app.use('/activities', verifyToken(authService), activityRouter(io));
 
 server.listen(PORT, () => {
   console.clear();
-  console.log(`Server ejecutanose en http://localhost:${PORT}`);
+  console.log(`Server ejecutándose en http://localhost:${PORT}`);
 });

@@ -5,6 +5,8 @@ import CreateUserCase from '../aplication/CreateUseCase';
 import CreateUserController from './controllers/CreateControllers';
 import ByIdUserController from './controllers/GetByCredencials'; 
 import getByUseCase from '../aplication/GetByUseCase';
+import { activityController } from '../../Actividades/infraestructure/dependencies';
+
 
 const authService = new AuthService(process.env.SECRET_JWT || 'defaultSecretKey');
 const userRepository = new MongoUserRepository();
@@ -18,5 +20,6 @@ export {
     authService,
     authenticateUser,
     createUserController,
-    byIdUserController
+    byIdUserController,
+    activityController
 };

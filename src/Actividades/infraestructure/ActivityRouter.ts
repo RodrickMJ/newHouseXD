@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Server } from 'socket.io';
-import {activityController,logActivityUseCase } from './dependencies';
+import {activityController,logActivityUseCase} from './dependencies';
 
 const activityRouter = (io: Server): Router => {
     const router = Router();
