@@ -31,7 +31,9 @@ const authController = AuthController(authenticateUser, authService);
 
 app.use('/auth', authController);
 app.use('/users', verifyToken(authService), userRouter);
-app.use('/activities', activityRouter(io));
+
+//aca esta la ruta primero pasa por la verificacion para las actividades.
+app.use('/activities', verifyToken(authService), activityRouter(io));
 
 server.listen(PORT, () => {
   console.clear();

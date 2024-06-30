@@ -1,8 +1,9 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import LogActivityUseCase from "../../aplication/LogActivityUseCase";
 import ActivityEntry from "../../domain/ActivityEntry";
+import { AuthenticatedRequest } from '../../../../src/types'; 
 
 dotenv.config();
 
@@ -11,12 +12,12 @@ export default class ActivityController {
 
     constructor(private readonly logActivityUseCase: LogActivityUseCase) {}
 
-    async logActivity(req: Request, res: Response) {
+    async logActivity(req: AuthenticatedRequest, res: Response) {
         try {
             const { userId, action } = req.body as { userId: string; action: string };
             const activity = await this.logActivityUseCase.logActivity(userId, action);
 
-            if (activity && activity.userId === '6677f990a804a94f5bbb565a') {
+            if (activity && !req.verified) {
                 await this.logSuspiciousActivity(activity);
             }
 
@@ -29,7 +30,7 @@ export default class ActivityController {
         }
     }
 
-    async getActivitiesHistory(req: Request, res: Response) {
+    async getActivitiesHistory(_req: AuthenticatedRequest, res: Response) {
         try {
             const activities = await this.logActivityUseCase.getActivitiesHistory();
             res.json({ success: true, activities });
@@ -73,7 +74,7 @@ export default class ActivityController {
         }
     }
 
-    addClient(req: Request, res: Response) {
+    addClient(req: AuthenticatedRequest, res: Response) {
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
@@ -93,3 +94,4 @@ export default class ActivityController {
         });
     }
 }
+
