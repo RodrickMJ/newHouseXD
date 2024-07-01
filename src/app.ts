@@ -34,7 +34,7 @@ app.use('/auth', authController);
 app.use('/users', verifyToken(authService), userRouter);
 
 // Ruta de dispositivos
-app.use('/devices', verifyToken(authService), deviceRouter());
+app.use('/devices', deviceRouter());
 
 // Ruta de actividades, pasa primero por la verificación del token y usa Socket.io
 app.use('/activities', verifyToken(authService), activityRouter(io));

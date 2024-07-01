@@ -13,7 +13,7 @@ const verifyToken = (authService: AuthService) => async (req: AuthenticatedReque
       action: 'Unauthorized access no token',
       timestamp: new Date(),
     });
-    next();
+    return res.status(401).json({ message: 'No token provided' });
   } else {
     try {
       const user = await authService.verifyToken(token);
@@ -24,23 +24,20 @@ const verifyToken = (authService: AuthService) => async (req: AuthenticatedReque
           action: 'Unauthorized access attempt (invalid token)',
           timestamp: new Date(),
         });
+        return res.status(401).json({ message: 'Invalid token' });
       } else {
         req.user = user;
         req.verified = true;
-        // Aqui verifica si el usuario tiene el rol de administrador
-        if (user.rol !== 'admin') {
-          return res.status(403).json({ message: 'Acceso no autorizado' });
-        }
       }
       next();
     } catch (err: unknown) {
       req.verified = false;
       await activityController.logSuspiciousActivity({
         userId: 'unknown',
-        action: `Error verifying token: ${err instanceof Error ? err.message : ' error'}`,
+        action: `Error verifying token: ${err instanceof Error ? err.message : 'Unknown error'}`,
         timestamp: new Date(),
       });
-      next();
+      return res.status(500).json({ message: 'Error verifying token' });
     }
   }
 };
