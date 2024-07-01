@@ -1,18 +1,15 @@
+import CreateActivityUseCase from '../aplication/CreateActivityUseCase';
 import MongoActivityRepository from './MongoActivityRepository';
-import LogActivityUseCase from '../aplication/LogActivityUseCase';
-import ActivityController from './controllers/ActivityController';
-import ActivityService from './controllers/ActivityService';
+import getActivitiesHistory from '../aplication/GetActivitiesHistory';
+import CreateActivityController from './controllers/CreateActivityController';
+import GetActivityController from './controllers/GetActivityController';
 
-const activityRepository = new MongoActivityRepository();
+export const mongoActivityRepository = new MongoActivityRepository();
 
-const logActivityUseCase = new LogActivityUseCase(activityRepository);
+export const createActivityUseCase = new CreateActivityUseCase(mongoActivityRepository);
+export const getActivityesHistory = new getActivitiesHistory(mongoActivityRepository);
 
-const activityController = new ActivityController(logActivityUseCase);
-const activityService = new ActivityService(activityRepository);
+export const createActivityController = new CreateActivityController(createActivityUseCase);
+export const GetActivityesHistory = new GetActivityController(getActivityesHistory);
 
-export {
-    activityRepository,
-    logActivityUseCase,
-    activityController,
-    activityService
-};
+

@@ -27,11 +27,9 @@ const PORT: number | string = process.env.SERVER_PORT || 3000;
 
 connectToDatabase()
 
-const authController = AuthController(authenticateUser, authService);
-
-app.use('/auth', authController);
+app.use('/auth', AuthController(authenticateUser, authService));
 app.use('/users', verifyToken(authService), userRouter);
-app.use('/activities', activityRouter(io));
+app.use('/activities', activityRouter);
 
 server.listen(PORT, () => {
   console.clear();

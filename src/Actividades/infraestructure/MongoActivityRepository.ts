@@ -1,18 +1,21 @@
 import ActivityRepository from "../domain/ActivityRepository";
 import ActivityEntry from "../domain/ActivityEntry";
 import ActivityModel from "../../Database/models/Actividades";
+import { ActivityRequest } from "../domain/DTOS/ActivityRequest";
 
 export default class MongoActivityRepository implements ActivityRepository {
-    async logActivity(userId: string, action: string): Promise<ActivityEntry | null> {
+    async logActivity(userName: ActivityRequest, dispositivo: ActivityRequest, action: ActivityRequest, status:ActivityRequest): Promise<ActivityEntry | null> {
         try {
-            const activity = { userId, action, timestamp: new Date() };
+            const activity = { userName, dispositivo, action, status, timestamp: new Date() };
             const createdActivity = new ActivityModel(activity);
             const result = await createdActivity.save();
 
             const response: ActivityEntry = {
                 id: result._id as unknown as string,
+                userName: result.userName,
+                dispositivo: result.dispositivo,
                 action: result.action,
-                userId: result.userId,
+                status: result.status,
                 timestamp: result.timestamp
             };
 
@@ -27,9 +30,11 @@ export default class MongoActivityRepository implements ActivityRepository {
         try {
             const activities = await ActivityModel.find().exec();
             return activities.map(activity => ({
-                 id: activity._id as unknown as string,
+                id: activity._id as unknown as string,
+                userName: activity.userName,
+                dispositivo: activity.dispositivo,
                 action: activity.action,
-                userId: activity.userId,
+                status: activity.status,
                 timestamp: activity.timestamp
             }));
         } catch (error) {

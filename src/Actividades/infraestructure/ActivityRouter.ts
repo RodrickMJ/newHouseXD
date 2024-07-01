@@ -1,28 +1,12 @@
 import { Router } from 'express';
-import { Server } from 'socket.io';
-import {activityController,logActivityUseCase } from './dependencies';
+import { createActivityController,GetActivityesHistory } from './dependencies';
 
-const activityRouter = (io: Server): Router => {
-    const router = Router();
+const activityRouter = Router();
 
-    router.post('/action', async (req, res) => {
-        await activityController.logActivity(req, res);
-    });
+activityRouter.post('/action', createActivityController.logActivity.bind(createActivityController));
 
-    router.post('/suspicious', async (req, res) => {
-        await activityController.logSuspiciousActivity(req.body);
-        res.json({ success: true });
-    });
+activityRouter.get('/history', GetActivityesHistory.ActivitiesHistory.bind(GetActivityesHistory));
 
-    router.get('/history', async (req, res) => {
-        await activityController.getActivitiesHistory(req, res);
-    });
-
-    router.get('/events', (req, res) => {
-        activityController.addClient(req, res);
-    });
-
-    return router;
-};
+activityRouter.get('/events', createActivityController.addClient.bind(createActivityController));
 
 export default activityRouter;

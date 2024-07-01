@@ -1,4 +1,6 @@
 export interface ActivityRequest {
+    userName: string;
+    dispositivo: string;
     action: string;
-    userId: string;
-}
+    status: boolean;
+};

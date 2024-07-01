@@ -1,6 +1,8 @@
 export interface ActivityResponse {
     id: string;
+    userName: string;
+    dispositivo: string;
     action: string;
-    userId: string;
+    status: boolean;
     timestamp: Date;
-}
+};
