@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 interface UserPayload {
   id: number;
   username: string;
+  rol?: string;
+  
 }
 
 export default class AuthService {

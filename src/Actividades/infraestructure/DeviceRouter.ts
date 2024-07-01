@@ -1,11 +1,19 @@
 import { Router } from 'express';
-import { deviceController } from '../infraestructure/dependencies'; 
+
+import verifyToken from '../../Users/infrastructure/middleware/VerifyToken';
+import { deviceController} from '../infraestructure/dependencies';
+import { authService } from '../../Users/infrastructure/dependencies';
+
 
 const deviceRouter = (): Router => {
   const router = Router();
 
-  //agrega un dispositivoo
-  router.post('/add', async (req, res) => {
+  // Agregar un dispositivo requiere autenticación y verificación del token
+  router.post('/add', verifyToken(authService), async (req, res) => {
+    // Verificar el rol del usuario para que permita o no la accion
+    if (req.user?.rol !== 'admin') {
+      return res.status(403).json({ message: 'Acceso no autorizado' });
+    }
     await deviceController.addDevice(req, res);
   });
 
@@ -14,11 +22,12 @@ const deviceRouter = (): Router => {
     await deviceController.getDevices(req, res);
   });
 
-  //cambiar el status del sipositivo
+  //cambia el status del sipositivo
   router.put('/trigger/:deviceId', async (req, res) => {
     await deviceController.triggerDevice(req, res);
   });
 
+  
 
   return router;
 };

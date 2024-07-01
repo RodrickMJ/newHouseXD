@@ -1,37 +1,38 @@
 import { NextFunction, Response } from 'express';
 import AuthService from '../../aplication/Services/AuthService';
 import { AuthenticatedRequest } from '../../../../src/types'; 
-import { activityController } from '../dependencies'; 
+import { activityController } from '../dependencies';
 
 const verifyToken = (authService: AuthService) => async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.headers['authorization'];
- //si no hay token 
+
   if (!token) {
     req.verified = false;
     await activityController.logSuspiciousActivity({
-      userId: 'desconocido',
+      userId: 'unknown',
       action: 'Unauthorized access no token',
       timestamp: new Date(),
     });
     next();
   } else {
     try {
-      //por si hay token pero no es valido
       const user = await authService.verifyToken(token);
       if (!user) {
         req.verified = false;
         await activityController.logSuspiciousActivity({
-          userId: 'desconocido ',
+          userId: 'unknown',
           action: 'Unauthorized access attempt (invalid token)',
           timestamp: new Date(),
         });
-        //si es valido lo añade y no hay sospecha
       } else {
         req.user = user;
         req.verified = true;
+        // Aqui verifica si el usuario tiene el rol de administrador
+        if (user.rol !== 'admin') {
+          return res.status(403).json({ message: 'Acceso no autorizado' });
+        }
       }
       next();
-      //caso de error al verificar el token
     } catch (err: unknown) {
       req.verified = false;
       await activityController.logSuspiciousActivity({
