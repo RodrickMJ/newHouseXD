@@ -11,5 +11,3 @@ export const getActivityesHistory = new getActivitiesHistory(mongoActivityReposi
 
 export const createActivityController = new CreateActivityController(createActivityUseCase);
 export const GetActivityesHistory = new GetActivityController(getActivityesHistory);
-
-

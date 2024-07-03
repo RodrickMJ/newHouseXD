@@ -6,9 +6,9 @@ const router = Router();
 
 export default (authenticateUser: AuthenticateUser, authService: AuthService) => {
   router.post('/login', async (req: Request, res: Response) => {
-    const { username, password } = req.body;
+    const { userName, password } = req.body;
     try {
-      const token = await authenticateUser.run(username, password);
+      const token = await authenticateUser.run(userName, password);
       res.json({ token });
     } catch (err: unknown) {
       if (err instanceof Error) {

@@ -17,18 +17,18 @@ export default class MongoUserRepository implements UserRepository {
            
             const existingUser = await UserModel.findOne({
                 $or: [
-                    { username: user.username },
+                    { username: user.userName },
                     { email: user.email }
                 ]
             });
 
             if (existingUser) {
-                console.log(`User with username ${user.username} or email ${user.email} already exists`);
+                console.log(`User with username ${user.userName} or email ${user.email} already exists`);
                 return null; 
             }
 
             const createdUser = new UserModel({
-                username: user.username,
+                userName: user.userName,
                 email: user.email,
                 password: user.password,
                 nombre: user.nombre,
@@ -41,7 +41,7 @@ export default class MongoUserRepository implements UserRepository {
             const response: userEntry = {
                 id: result._id as unknown as number,
                 nombre: result.nombre,
-                username: result.username,
+                userName: result.userName,
                 email: result.email,
                 password: result.password,
                 rol: result.rol as Role,
@@ -67,7 +67,7 @@ export default class MongoUserRepository implements UserRepository {
             const response: userEntry = {
                 id: user._id as unknown as number,
                 nombre: user.nombre,
-                username: user.username,
+                userName: user.userName,
                 email: user.email,
                 password: user.password,
                 rol: user.rol as Role,
@@ -93,7 +93,7 @@ export default class MongoUserRepository implements UserRepository {
             const response: userEntry = {
                 id: user._id as unknown as number,
                 nombre: user.nombre,
-                username: user.username,
+                userName: user.userName,
                 email: user.email,
                 password: user.password,
                 rol: user.rol as Role,

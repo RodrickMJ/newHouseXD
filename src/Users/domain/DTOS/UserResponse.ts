@@ -1,6 +1,6 @@
 export default interface UserResponse {
     id: number;
-    username: string;
+    userName: string;
     nombre: string;
     email: string;
     password: string;

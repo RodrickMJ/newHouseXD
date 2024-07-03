@@ -4,9 +4,9 @@ import ActivityModel from "../../Database/models/Actividades";
 import { ActivityRequest } from "../domain/DTOS/ActivityRequest";
 
 export default class MongoActivityRepository implements ActivityRepository {
-    async logActivity(userName: ActivityRequest, dispositivo: ActivityRequest, action: ActivityRequest, status:ActivityRequest): Promise<ActivityEntry | null> {
+    async logActivity(userName: ActivityRequest, dispositivo: ActivityRequest, action: ActivityRequest): Promise<ActivityEntry | null> {
         try {
-            const activity = { userName, dispositivo, action, status, timestamp: new Date() };
+            const activity = { userName, dispositivo, action, timestamp: new Date() };
             const createdActivity = new ActivityModel(activity);
             const result = await createdActivity.save();
 
@@ -15,7 +15,6 @@ export default class MongoActivityRepository implements ActivityRepository {
                 userName: result.userName,
                 dispositivo: result.dispositivo,
                 action: result.action,
-                status: result.status,
                 timestamp: result.timestamp
             };
 
@@ -34,7 +33,6 @@ export default class MongoActivityRepository implements ActivityRepository {
                 userName: activity.userName,
                 dispositivo: activity.dispositivo,
                 action: activity.action,
-                status: activity.status,
                 timestamp: activity.timestamp
             }));
         } catch (error) {

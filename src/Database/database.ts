@@ -18,7 +18,7 @@ const connectToDatabase = async () => {
         const createUserCase = new CreateUserCase(userRepository);
 
         const adminUser = {
-            username: "admin",
+            userName: "admin",
             email: "admin@example.com",
             password: "adminpassword",
             nombre: "Admin User",
@@ -27,7 +27,7 @@ const connectToDatabase = async () => {
         };
 
         const thiefUser = {
-            username: "thief",
+            userName: "thief",
             email: "thief@example.com",
             password: "thiefpassword",
             nombre: "Thief User",
@@ -37,7 +37,7 @@ const connectToDatabase = async () => {
 
         await createUserCase.run(adminUser);
         await createUserCase.run(thiefUser);
-        console.log(`Se crearon los usuarios predeterminados: ${adminUser.username} y ${thiefUser.username}`);
+        console.log(`Se crearon los usuarios predeterminados: ${adminUser.userName} y ${thiefUser.userName}`);
 
     } catch (error) {
         console.error('Error connecting to MongoDB', error);

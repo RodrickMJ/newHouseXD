@@ -15,6 +15,6 @@ export default class AuthenticateUser {
     if (!user || user.password !== password) {
       throw new Error('Invalid credentials');
     }
-    return this.authService.generateToken({ id: user.id, username: user.username});
+    return this.authService.generateToken({ id: user.id, username: user.userName});
   }
 }

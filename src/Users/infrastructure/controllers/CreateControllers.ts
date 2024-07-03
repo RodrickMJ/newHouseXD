@@ -6,10 +6,10 @@ export default class CreateUserController {
     constructor (readonly createUserCase: CreateUserCase) {}
 
     async run(req: Request, res: Response) {
-        const { username, email, password, nombre, rol } = req.body;
+        const { userName, email, password, nombre, rol } = req.body;
 
         const user: UserCreateRequest = {
-            username,
+            userName,
             email,
             password,
             nombre,

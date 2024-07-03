@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import { createActivityController,GetActivityesHistory } from './dependencies';
-import { Server } from 'socket.io';
-import {activityController,logActivityUseCase} from './dependencies';
 
 const activityRouter = Router();
 

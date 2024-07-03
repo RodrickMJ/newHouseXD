@@ -13,7 +13,7 @@ export default class getByUseCase {
 
         const response: UserResponse = {
             id: result.id,
-            username: result.username,
+            userName: result.userName,
             nombre: result.nombre,
             rol: result.rol,
             email: result.email,

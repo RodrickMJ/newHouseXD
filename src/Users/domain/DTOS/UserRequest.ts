@@ -1,7 +1,7 @@
 export type UserRole = 'admin' | 'esposa' | 'hijo' | 'invitado' | 'ladron' | 'familiar';
 
 export interface UserRequest {
-    username: string;
+    userName: string;
     email: string;
     password: string;
 }

@@ -1,8 +1,7 @@
-export interface ActivityResponse {
+export default interface ActivityResponse {
     id: string;
     userName: string;
     dispositivo: string;
     action: string;
-    status: boolean;
     timestamp: Date;
-};
+}; 
